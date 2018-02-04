@@ -1,0 +1,109 @@
+{
+	"plugin_id": "mycompteurs",
+	"name_fr": "Mes compteurs",
+	"icon": "compteur.png",
+	"version": "1.1",
+	"creation_date": "2017-10-01",
+	"modification_date": "2017-11-23",
+	"author": "Influman",
+	"description_fr": "Permet la gestion de 20 compteurs avec remise à zéro personnalisée",
+	"description_en": "",
+	"description_es": "",
+	"description_it": "",
+	"description_de": "",
+	"forum_link": "",
+	"parameters":
+  [
+		{
+			"parameter": "CPT", 
+			"description": "Numéro du compteur (1-20)",
+			"xtype": "textfield",
+      "default_value": "1",
+			"field": "width:40, allowBlank:false"
+    },
+       {
+			"parameter": "NAME", 
+			"description": "Nom du compteur",
+			"xtype": "textfield",
+      "default_value": "Compteur 1",
+			"field": "width:150, allowBlank:false"
+    },
+       {
+			"parameter": "PAS", 
+			"description": "Préciser le pas d'incrémentation",
+			"xtype": "textfield",
+      "default_value": "1",
+			"field": "width:40, allowBlank:false"
+    },
+       {
+			"parameter": "RAZ", 
+			"description": "Fréquence de remise à zéro - Unité",
+			"xtype": "combo",
+       "default_value": "Manuel",
+			"field": "width:200, allowBlank:false, store:['Manuel', 'Minute', 'Heure', 'Jour', 'Semaine', 'Mois', 'Année'], editable: false, shadow: true, triggerAction: 'all', typeAhead:true"
+    },
+	{
+			"parameter": "NBRAZ", 
+			"description": " Fréquence de remise à zéro - Nombre ",
+			"xtype": "textfield",
+       "default_value": "1",
+			"field": "width:40, allowBlank:false"
+    }
+ ],
+	"scripts":
+	[
+		{
+			"name": "mycompteurs.php"
+		}
+	],
+	"devices":
+  [
+		{
+			"device_id": "compteur",
+			"module_id": "51",
+			"type": "http",
+			"name_fr": "plugin.parameters.NAME",
+			"icon": "compteur.png",
+			"utilisation_id": "35",
+			"parameters":
+			{
+				"VAR1": "plugin.parameters.CPT",
+				"VAR2": "plugin.parameters.RAZ",
+				"VAR3": "plugin.parameters.NBRAZ",
+				"value_type": "float",
+				"ignore_errors": 3,
+				"RAW_URL": "http://localhost/script/?exec=mycompteurs.php&action=xml&cpt=[VAR1]&raz=[VAR2]&nbraz=[VAR3]",
+				"RAW_XPATH": "/COMPTEURS/CPT[VAR1]",
+				"POLLING": "1"
+			}
+			
+    },
+{
+			"device_id": "action",
+			"parent_id": "compteur",
+			"module_id": "41",
+			"type": "http",
+			"name_fr": "plugin.parameters.NAME - Actions",
+			"icon": "plus.png",
+			"utilisation_id": "43",
+			"parameters":
+			{
+				"VAR1": "plugin.parameters.CPT",
+				"VAR2": "plugin.parameters.RAZ",
+				"VAR3": "plugin.parameters.NBRAZ",
+				"value_type": "list",
+				"ignore_errors": 3,
+				"RAW_URL": "",
+				"RAW_XPATH": "",
+				"POLLING": "1"
+			},
+			"values":
+			[
+				{ "value": "0", "description": "Incrémenter", "icon": "plus.png", "http_url": "http://localhost/script/?exec=mycompteurs.php&cpt=[VAR1]", "http_type": "GET",  "http_params": "&action=increment&pas=plugin.parameters.PAS" },
+				{ "value": "10", "description": "Décrémenter", "icon": "minus.png", "http_url": "http://localhost/script/?exec=mycompteurs.php&cpt=[VAR1]", "http_type": "GET",  "http_params": "&action=decrement&pas=plugin.parameters.PAS" },
+				{ "value": "100", "description": "Remettre à zéro", "icon": "refresh.png", "http_url": "http://localhost/script/?exec=mycompteurs.php&cpt=[VAR1]", "http_type": "GET",  "http_params": "&action=raz" }
+			]
+    }
+  ]
+}
+
